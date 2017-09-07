@@ -61,7 +61,6 @@ Vstack <- function(chrom, i){
   return (Ns * (Enernst - Nact - Nohm - Nconc))
 }
 Vstack_actual <- c(-0.944957,0.00301801,7.401e-05,-1.88e-04, 23, .0001, 0.02914489)
-
 Crossover <- function(inDF){
   ## SELECT THE PARENTS
   pop <- df
@@ -99,7 +98,6 @@ Crossover <- function(inDF){
     hh <- pop[selectors[15],]
   } else { hh <- pop[selectors[16],] }
   
-  # Semis
   if (a[,8] < b[,8]){
     semi1 <- a
   } else { semi1 <- b }
@@ -116,7 +114,6 @@ Crossover <- function(inDF){
     semi4 <- gg
   } else { semi4 <- hh }
   
-  ## Finals
   if (semi1[,8] < semi3[,8]){
     a <- semi1
   } else { a <- semi2 }
@@ -134,8 +131,8 @@ Crossover <- function(inDF){
   for(i in 1:length(selectors)){
     child[selectors[i]] <- b[selectors[i]]
   }
-  
-  ## chance for selected gene mutation 11%
+
+  ## Chance for selected gene mutation 11%
   mut <- runif(1, 0, 1)
   if (mut < .11){
     chrom <- randomChrom()
@@ -161,7 +158,6 @@ population <- getRandPop()
 for (index in 1:100){
   
   ## Evaluate the fitness of each individual
-
   df <- data.frame(matrix(unlist(population), nrow=50, byrow=T))
   df$fit <- 0
   colnames(df) <- c('x1', 'x2', 'x3', 'x4', 'h', 'Rc', 'Bv', 'SSE')
@@ -178,27 +174,15 @@ for (index in 1:100){
   ## Create a new population
   population <- NULL
   population <- list()
-  for (m in 1:49){
+  for (m in 1:30){
     population <- c(population, list(Crossover(df)))  
   }
   ## Add the elite to new generation
-  population <- c(population, list(elite)) 
-
-  }
+  population <- c(population, as.list(as.data.frame(t(df[1:19,]))))
+  population <- c(population, as.list(as.data.frame(t(df[40,]))))
+}
   
 ##########  END MAIN BODY ###########
 
-############# PLOTTING AND TESTING ######
-
-plot(output$Amps ~ output$Model)
-
-
-### Tests ###
-
-atest <- c(111,111,111,111,111,111,111)
-btest <- c(999,999,999,999,999,999,999)
-Crossover(atest, atest)
-remove(atest)
-remove(btest)
 
 
